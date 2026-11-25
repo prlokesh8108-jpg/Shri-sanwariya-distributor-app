@@ -1,33 +1,38 @@
 
-name: Build Shri Sanwariya v4 APK
+name: Build Shri Sanwariya APK
 
 on:
   workflow_dispatch:
 
 jobs:
-  build-apk:
+  build:
     runs-on: ubuntu-latest
+
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
 
-      - name: Set up JDK 17
+      - name: Set up Java
         uses: actions/setup-java@v4
         with:
           java-version: '17'
           distribution: temurin
 
-      - name: Build APK
+      - name: Extract Android project
+        run: |
+          unzip -o Shri_Sanwariya_v4_Android.zip
+
+      - name: Set up Gradle
         uses: gradle/actions/setup-gradle@v4
         with:
           gradle-version: '8.9'
 
-      - name: Compile Android APK
+      - name: Build APK
+        working-directory: Shri_Sanwariya_v4_Android
         run: gradle assembleDebug
 
       - name: Upload APK
         uses: actions/upload-artifact@v4
         with:
           name: Shri_Sanwariya_v4_APK
-          path: app/build/outputs/apk/debug/app-debug.apk
-
+          path: Shri_Sanwariya_v4_Android/app/build/outputs/apk/debug/app-debug.apk
